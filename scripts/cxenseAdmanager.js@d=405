@@ -1,0 +1,31 @@
+var cX = cX || {};
+cX.callQueue = cX.callQueue || [];
+// Compat mode, 4s delay
+//cX.options = cX.options || { compat: { c1x: { wait: 4000 } } };
+localStorage.removeItem('cxSegments');
+cX.callQueue.push([
+  'getUserSegmentIds',
+  {
+    persistedQueryId: '0a819e087c199476bdac777f5a4b5733eb410673',
+    callback: function(segments) {
+      if (
+        typeof window.sessionStorage === 'object' &&
+        typeof window.sessionStorage.getItem === 'function'
+      ) {
+        sessionStorage.setItem('cxSegments', segments.join(','));
+      }
+    },
+  },
+]);
+function getUserSegmentIdsLocal() {
+  var segments = [];
+  if (
+    typeof window.sessionStorage === 'object' &&
+    typeof window.sessionStorage.getItem === 'function' &&
+    sessionStorage.getItem('cxSegments') !== null &&
+    sessionStorage.getItem('cxSegments').length > 0
+  ) {
+    segments = sessionStorage.getItem('cxSegments').split(',');
+  }
+  return segments;
+}

@@ -1,0 +1,100 @@
+tp = window.tp || [];
+tp.push([
+  'addHandler',
+  'loginSuccess',
+  function(data) {
+    var url = new URL(window.location.href);
+    let isLogin = false;
+    if (url.searchParams.has('return_to')) {
+      isLogin = true;
+      window.location.href = url.searchParams.get('return_to');
+    } else if (
+      url.href.includes('login-amp') ||
+      url.href.includes('suscripcion')
+    ) {
+      isLogin = true;
+    } else if (
+      window.location.href.includes('login') ||
+      window.location.href.includes('register')
+    ) {
+      isLogin = true;
+      window.location.href = `${window.location.protocol}//${window.location.host}`;
+    }
+    if (!isLogin)
+      window.location.href = `${window.location.protocol}//${window.location.host}`;
+    /*async function fetchIp(data) {
+      try {
+        const requestOptionsIp = await { method: 'GET', redirect: 'follow' };
+        const user_ip = await (
+          await fetch(
+            'https://api.ipify.org?format=jsonp?callback=?',
+            requestOptionsIp,
+          )
+        ).text();
+        const myHeaders = await new Headers();
+        myHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
+        const urlencoded = await new URLSearchParams();
+        urlencoded.append('user_email', data.params.email);
+        urlencoded.append('user_id', data.params.sub);
+        urlencoded.append('user_browser_id', navigator.userAgent);
+        urlencoded.append('user_ip', user_ip);
+        urlencoded.append('timestamp', data.params.login_timestamp);
+        urlencoded.append('origin_host', window.location.hostname);
+        urlencoded.append('session_state', 1);
+        const requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: urlencoded,
+          redirect: 'follow',
+        };
+        const resultFetch = await (
+          await fetch(
+            'https://sesiones.elespectador.com/send_data',
+            requestOptions,
+          )
+        ).json();
+        return resultFetch;
+      } catch (err) {}
+    }
+    fetchIp(data).then(result => {
+      if (result.code === 1) {
+        var url = new URL(window.location.href);
+        if (url.searchParams.has('return_to')) {
+          window.location.href = url.searchParams.get('return_to');
+        } else if (url.href.includes('login-amp')) {
+        } else if (
+          window.location.href.includes('login') ||
+          window.location.href.includes('register')
+        ) {
+          window.location.href = `${window.location.protocol}//${window.location.host}`;
+        }
+      } else if (result.code === 2) {
+        tp.pianoId.logout();
+        location.reload();
+      } else if (result.code === 3) {
+        tp.pianoId.logout();
+        sessionStorage.setItem('maxSession', true);
+        sessionStorage.setItem('objSessions', JSON.stringify(result.doc));
+        location.reload();
+      } else {
+        tp.pianoId.logout();
+      }
+    });*/
+  },
+]);
+tp.push(['setUsePianoIdUserProvider', true]);
+tp.push([
+  'init',
+  function() {
+    tp.pianoId.show({
+      displayMode: 'inline',
+      screen: 'login',
+      containerSelector: '.pianoContainerLogin',
+    });
+    const tpInitEvent = new Event('tpInit');
+    document.dispatchEvent(tpInitEvent);
+    window.addEventListener('load', () => {
+      document.dispatchEvent(tpInitEvent);
+    });
+  },
+]);

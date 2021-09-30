@@ -1,0 +1,7 @@
+tp = window.tp || [];
+tp.push([
+  'init',
+  function() {
+    tp.experience.init();
+  },
+]);

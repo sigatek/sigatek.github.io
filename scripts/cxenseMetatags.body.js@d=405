@@ -1,0 +1,61 @@
+/* eslint-disable */
+function handleTP(event) {
+  if (window.tp.pianoId) {
+    if (window.tp.pianoId.isUserValid()) {
+      //If the user is logged
+      var userId = '' + tp.pianoId.getUser().email;
+      var userIdHash = CryptoJS.MD5(userId).toString();
+      window.hashMD5 = userIdHash;
+      console.log('CxenseQueueExec');
+      cX.callQueue.push(['addExternalId', { id: userIdHash, type: 'esp' }]);
+      cX.callQueue.push([
+        'invoke',
+        function() {
+          var persistedQueryId = '65f233b07f8d40a5e79d84b3cf23d58860f8eb8d';
+          var apiUrl =
+            'https://api.cxense.com/profile/user/external/link/update?callback={{callback}}' +
+            '&persisted=' +
+            encodeURIComponent(persistedQueryId) +
+            '&json=' +
+            encodeURIComponent(
+              cX.JSON.stringify({ id: userIdHash, cxid: cX.getUserId() }),
+            );
+          cX.jsonpRequest(apiUrl, function(data) {
+            // Uncomment for debugging:
+            //alert(cX.JSON.stringify(data))
+            //console.log("CXResponse", data)
+          });
+        },
+      ]);
+    }
+  }
+  cX.CCE.callQueue.push([
+    'sendPageViewEvent',
+    'esp',
+    'd9d75fea59c5d8d582a025ff540e9721a0b35d75',
+  ]);
+}
+
+var cX = (window.cX = window.cX || {});
+cX.callQueue = cX.callQueue || [];
+cX.CCE = cX.CCE || {};
+cX.CCE.callQueue = cX.CCE.callQueue || [];
+console.log('CxenseInit');
+//document.write('<div id="cX-root" style="display:none"></div>');
+document.body.innerHTML += '<div id="cX-root" style="display:none"></div>';
+//cX.callQueue.push(['setSiteId', '1140859254376319871']);//Dev
+//cX.callQueue.push(['setSiteId', '1137443721171561932']); //Sandbox
+cX.callQueue.push(['setSiteId', '1135197808711567685']); //PRD
+if (typeof window.matherData == 'object') {
+  cX.callQueue.push(['setCustomParameters', window.matherData]);
+}
+window.addEventListener('load', handleTP);
+
+(function(d, s, e, t) {
+  e = d.createElement(s);
+  e.type = 'text/java' + s;
+  e.async = 'async';
+  e.src = 'https://cdn.cxense.com/cx.cce.js';
+  t = d.getElementsByTagName(s)[0];
+  t.parentNode.insertBefore(e, t);
+})(document, 'script');

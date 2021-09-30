@@ -1,0 +1,4 @@
+tp = window.tp || [];
+tp.push(['setAid', 'ZUhps7eupu']);
+tp.push(['setEndpoint', 'https://buy.tinypass.com/api/v3']);
+tp.push(['setUsePianoIdUserProvider', true]);
